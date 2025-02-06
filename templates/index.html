@@ -12,10 +12,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --background-color: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-primary: #1e293b;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f4ff 100%);
+            color: var(--text-primary);
         }
+
         .container {
             padding: 15px;
             max-width: 1400px;
@@ -65,37 +75,25 @@
         }
         .exercise-tooltip {
             position: relative;
-            display: inline-block;
             cursor: help;
-            padding: 5px;
+            margin-left: 10px;
         }
 
         .tooltip-content {
             visibility: hidden;
+            opacity: 0;
             position: absolute;
             z-index: 1000;
-            background: #333;
+            background: #1e293b;
             color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            white-space: normal;
-            opacity: 0;
-            transition: opacity 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            width: 200px;
+            padding: 12px 15px;
+            border-radius: 12px;
+            width: 220px;
             right: 0;
             top: 100%;
-            margin-top: 5px;
-        }
-
-        .tooltip-content::after {
-            content: '';
-            position: absolute;
-            top: -5px;
-            right: 10px;
-            border: 5px solid transparent;
-            border-bottom-color: #333;
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
         }
 
         .exercise-tooltip:hover .tooltip-content {
@@ -103,16 +101,22 @@
             opacity: 1;
         }
 
-        .muscle-info {
-            line-height: 1.4;
+        .muscle-group {
+            margin-top: 8px;
         }
 
-        .exercise-select-group {
+        .muscle-group-label {
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        .exercise-select-wrapper {
             position: relative;
-            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Add these styles for better Select2 integration */
         .select2-container {
             width: 100% !important;
         }
@@ -153,34 +157,23 @@
 
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            border-radius: 16px;
             text-align: center;
             transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 600;
-            color: #0061f2;
-            margin: 10px 0;
-        }
-
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.9rem;
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
         }
 
         .quote-card {
@@ -256,83 +249,55 @@
             top: 20px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 991px) {
             .container {
-                padding: 10px;
-                max-width: 100%;
+                padding: 12px;
             }
 
-            .row {
-                flex-direction: column;
+            .glass-card {
+                margin-bottom: 20px;
             }
 
-            .col-md-5, .col-md-7 {
-                width: 100%;
-                padding: 0;
-            }
-
-            .card {
+            .history-entry {
+                padding: 15px;
                 margin-bottom: 15px;
-                border-radius: 10px;
             }
 
             .tooltip-content {
-                width: 180px;
-                right: -90px;
-                transform: translateX(50%);
-            }
-
-            .tooltip-content::after {
-                right: 50%;
-                transform: translateX(50%);
-            }
-
-            .calendar-card {
-                position: static;
-                margin-top: 15px;
-            }
-
-            .stats-container {
-                grid-template-columns: 1fr;
-                padding: 10px;
-            }
-
-            .form-control, .select2-container {
-                font-size: 16px;
-            }
-
-            .quote-card {
-                max-width: 200px;
-                bottom: 8px;
-                right: 8px;
+                width: 200px;
+                left: 50%;
+                transform: translateX(-50%);
+                right: auto;
             }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 576px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
             .container {
                 padding: 5px;
             }
 
-            .card-body {
-                padding: 10px;
+            .card-header {
+                padding: 12px 15px;
             }
 
-            .tooltip-content {
-                width: 160px;
+            .quote-card {
+                max-width: 180px;
                 font-size: 0.8rem;
             }
+        }
 
-            .stats-container {
-                gap: 10px;
-            }
+        /* Ensure proper spacing between stacked elements */
+        .g-4 > * {
+            margin-bottom: 1.5rem;
+        }
 
-            .stat-card {
-                padding: 10px;
-            }
-
-            .stat-number {
-                font-size: 1.8rem;
-            }
+        /* Make cards full width on mobile */
+        .card {
+            width: 100%;
         }
     </style>
 </head>
@@ -340,12 +305,29 @@
     <div class="container">
         <h1 class="text-center mb-4">💪 Fitness Tracker</h1>
         
-        <div class="row">
-            <!-- Exercise Form Column (Left Side) -->
-            <div class="col-md-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="mb-0">Add Exercise</h2>
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number">{{ monthly_sessions }}</div>
+                <div class="stat-label">Sessions this month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💪</div>
+                <div class="stat-number">{{ total_exercises }}</div>
+                <div class="stat-label">Total exercises</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-number">{{ streak_days }}</div>
+                <div class="stat-label">Day streak</div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12 col-lg-5 order-1">
+                <div class="card glass-card">
+                    <div class="card-header modern-header">
+                        <h5 class="mb-0">Add Exercise</h5>
                     </div>
                     <div class="card-body">
                         <form method="POST" id="exerciseForm">
@@ -355,7 +337,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Exercise:</label>
-                                <div class="d-flex flex-column">
+                                <div class="exercise-select-wrapper">
                                     <select class="form-control select2" name="type" id="exerciseSelect" required>
                                         <option value="">Search or select exercise</option>
                                         <optgroup label="Chest">
@@ -436,10 +418,10 @@
                                             <option value="Box Squats">Box Squats</option>
                                         </optgroup>
                                     </select>
-                                    <div class="exercise-tooltip align-self-end mt-1">
+                                    <div class="exercise-tooltip">
                                         <i class="bi bi-info-circle"></i>
                                         <div class="tooltip-content" id="exerciseInfo">
-                                            Select an exercise to see muscle information
+                                            Select an exercise to see target muscles
                                         </div>
                                     </div>
                                 </div>
@@ -460,58 +442,45 @@
                         </form>
                     </div>
                 </div>
+            </div>
 
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h3 class="mb-0">Exercise History</h3>
+            <div class="col-12 col-lg-7 order-2">
+                <div class="card glass-card">
+                    <div class="card-header modern-header">
+                        <h5 class="mb-0">Exercise History</h5>
                     </div>
                     <div class="card-body">
-                        {% for exercise in exercises %}
-                        <div class="history-entry" id="exercise-{{ exercise.id }}">
-                            <div class="stats">
-                                <strong>{{ exercise.type }}</strong>
-                                <div class="mt-2">
-                                    {% for set in exercise.sets %}
-                                    <div class="set-details">
-                                        <span class="badge bg-primary">Set {{ set.set_number }}</span>
-                                        <span class="badge bg-success">{{ set.weight }}kg</span>
-                                        <span class="badge bg-info">{{ set.reps }} reps</span>
-                                        <span class="badge bg-warning">Total: {{ set.total }}kg</span>
+                        <div class="history-container">
+                            {% for exercise in exercises %}
+                            <div class="history-entry glass-effect" id="exercise-{{ exercise.id }}">
+                                <div class="stats">
+                                    <strong>{{ exercise.type }}</strong>
+                                    <div class="mt-2">
+                                        {% for set in exercise.sets %}
+                                        <div class="set-details">
+                                            <span class="badge bg-primary">Set {{ set.set_number }}</span>
+                                            <span class="badge bg-success">{{ set.weight }}kg</span>
+                                            <span class="badge bg-info">{{ set.reps }} reps</span>
+                                            <span class="badge bg-warning">Total: {{ set.total }}kg</span>
+                                        </div>
+                                        {% endfor %}
                                     </div>
-                                    {% endfor %}
+                                </div>
+                                <div class="date-time mt-2">
+                                    📅 {{ exercise.date.strftime('%Y-%m-%d %H:%M') }} MYT
                                 </div>
                             </div>
-                            <div class="date-time mt-2">
-                                📅 {{ exercise.date.strftime('%Y-%m-%d %H:%M') }} MYT
-                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- Calendar Column (Right Side) -->
-            <div class="col-md-7">
-                <div class="calendar-card">
-                    <div class="calendar-header">
-                        <h3 class="mb-0">Fitness Journey Calendar</h3>
+            <div class="col-12 order-3">
+                <div class="calendar-card glass-card">
+                    <div class="calendar-header modern-header">
+                        <h5 class="mb-0">Fitness Journey</h5>
                     </div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-card">
-                            <div class="stat-number">{{ monthly_sessions }}</div>
-                            <div class="stat-label">Workouts This Month</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">{{ total_exercises }}</div>
-                            <div class="stat-label">Total Exercises</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">{{ streak_days }}</div>
-                            <div class="stat-label">Day Streak</div>
-                        </div>
-                    </div>
-
                     <div id="calendar"></div>
                 </div>
             </div>
@@ -537,109 +506,383 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script>
-    // Initialize Select2
+    // Complete exercise data with muscle information
+    const exerciseData = {
+        // CHEST EXERCISES
+        "Flat Bench Press": {
+            primary: ["Middle Chest (Pectoralis Major)"],
+            secondary: ["Front Deltoids", "Triceps"],
+            stabilizers: ["Rotator Cuff", "Core", "Serratus Anterior"]
+        },
+        "Incline Bench Press": {
+            primary: ["Upper Chest (Clavicular Head)"],
+            secondary: ["Front Deltoids", "Triceps"],
+            stabilizers: ["Rotator Cuff", "Core", "Serratus Anterior"]
+        },
+        "Decline Bench Press": {
+            primary: ["Lower Chest (Sternal Head)"],
+            secondary: ["Triceps", "Front Deltoids"],
+            stabilizers: ["Core", "Serratus Anterior"]
+        },
+        "Dumbbell Press": {
+            primary: ["Chest (Pectoralis Major)"],
+            secondary: ["Front Deltoids", "Triceps"],
+            stabilizers: ["Rotator Cuff", "Core", "Stabilizing Muscles"]
+        },
+        "Push-ups": {
+            primary: ["Chest (Pectoralis Major)"],
+            secondary: ["Triceps", "Front Deltoids"],
+            stabilizers: ["Core", "Serratus Anterior", "Lower Back"]
+        },
+        "Dips": {
+            primary: ["Lower Chest", "Triceps"],
+            secondary: ["Front Deltoids", "Serratus Anterior"],
+            stabilizers: ["Core", "Rotator Cuff"]
+        },
+        "Cable Flyes": {
+            primary: ["Chest (Pectoralis Major)"],
+            secondary: ["Front Deltoids"],
+            stabilizers: ["Rotator Cuff", "Core"]
+        },
+        "Dumbbell Flyes": {
+            primary: ["Chest (Pectoralis Major)"],
+            secondary: ["Front Deltoids"],
+            stabilizers: ["Rotator Cuff", "Core", "Biceps (stabilizing)"]
+        },
+        "Pec Deck": {
+            primary: ["Chest (Pectoralis Major)"],
+            secondary: ["Front Deltoids"],
+            stabilizers: ["Rotator Cuff"]
+        },
+        "Landmine Press": {
+            primary: ["Upper Chest", "Front Deltoids"],
+            secondary: ["Triceps", "Core"],
+            stabilizers: ["Rotator Cuff", "Serratus Anterior"]
+        },
+
+        // BACK EXERCISES
+        "Deadlifts": {
+            primary: ["Lower Back", "Hamstrings"],
+            secondary: ["Glutes", "Traps", "Forearms", "Quadriceps"],
+            stabilizers: ["Core", "Upper Back", "Lats"]
+        },
+        "Pull-ups/Chin-ups": {
+            primary: ["Latissimus Dorsi", "Upper Back"],
+            secondary: ["Biceps", "Rear Deltoids"],
+            stabilizers: ["Core", "Forearms", "Lower Traps"]
+        },
+        "Bent Over Rows": {
+            primary: ["Upper Back", "Latissimus Dorsi"],
+            secondary: ["Biceps", "Rear Deltoids", "Traps"],
+            stabilizers: ["Lower Back", "Core", "Hamstrings"]
+        },
+        "T-Bar Rows": {
+            primary: ["Upper Back", "Latissimus Dorsi"],
+            secondary: ["Biceps", "Rear Deltoids", "Traps"],
+            stabilizers: ["Lower Back", "Core"]
+        },
+        "Lat Pulldowns": {
+            primary: ["Latissimus Dorsi"],
+            secondary: ["Biceps", "Rear Deltoids", "Rhomboids"],
+            stabilizers: ["Core", "Lower Traps"]
+        },
+        "Seated Cable Rows": {
+            primary: ["Upper Back", "Latissimus Dorsi"],
+            secondary: ["Biceps", "Rear Deltoids"],
+            stabilizers: ["Core", "Lower Back"]
+        },
+        "Single-Arm Dumbbell Rows": {
+            primary: ["Latissimus Dorsi", "Upper Back"],
+            secondary: ["Biceps", "Rear Deltoids", "Traps"],
+            stabilizers: ["Core", "Lower Back", "Obliques"]
+        },
+        "Meadows Rows": {
+            primary: ["Latissimus Dorsi", "Upper Back"],
+            secondary: ["Biceps", "Rear Deltoids"],
+            stabilizers: ["Core", "Lower Back", "Obliques"]
+        },
+        "Straight Arm Pulldowns": {
+            primary: ["Latissimus Dorsi"],
+            secondary: ["Triceps", "Lower Chest"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+        "Rack Pulls": {
+            primary: ["Upper Back", "Traps"],
+            secondary: ["Lower Back", "Forearms"],
+            stabilizers: ["Core", "Lats"]
+        },
+
+        // BICEPS EXERCISES
+        "Standing Barbell Curls": {
+            primary: ["Biceps Brachii"],
+            secondary: ["Brachialis", "Forearms"],
+            stabilizers: ["Core", "Front Deltoids", "Wrist Flexors"]
+        },
+        "Alternating Dumbbell Curls": {
+            primary: ["Biceps Brachii"],
+            secondary: ["Brachialis", "Forearms"],
+            stabilizers: ["Core", "Shoulders", "Wrist Flexors"]
+        },
+        "Hammer Curls": {
+            primary: ["Brachialis", "Brachioradialis"],
+            secondary: ["Biceps Brachii", "Forearms"],
+            stabilizers: ["Core", "Shoulders", "Wrist Flexors"]
+        },
+        "Preacher Curls": {
+            primary: ["Biceps Brachii (Lower Head)"],
+            secondary: ["Brachialis", "Forearms"],
+            stabilizers: ["Anterior Deltoid"]
+        },
+        "Incline Dumbbell Curls": {
+            primary: ["Biceps Brachii (Long Head)"],
+            secondary: ["Brachialis", "Forearms"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+        "Spider Curls": {
+            primary: ["Biceps Brachii (Short Head)"],
+            secondary: ["Brachialis", "Forearms"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+        "Cable Curls": {
+            primary: ["Biceps Brachii"],
+            secondary: ["Brachialis", "Forearms"],
+            stabilizers: ["Core", "Shoulders", "Wrist Flexors"]
+        },
+        "Concentration Curls": {
+            primary: ["Biceps Brachii"],
+            secondary: ["Brachialis"],
+            stabilizers: ["Anterior Deltoid", "Wrist Flexors"]
+        },
+        "EZ Bar Curls": {
+            primary: ["Biceps Brachii"],
+            secondary: ["Brachialis", "Forearms"],
+            stabilizers: ["Core", "Shoulders", "Wrist Flexors"]
+        },
+        "Reverse Curls": {
+            primary: ["Brachioradialis", "Forearm Extensors"],
+            secondary: ["Biceps Brachii", "Brachialis"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+
+        // TRICEPS EXERCISES
+        "Close Grip Bench Press": {
+            primary: ["Triceps (All Heads)"],
+            secondary: ["Chest", "Front Deltoids"],
+            stabilizers: ["Core", "Rotator Cuff"]
+        },
+        "Skull Crushers": {
+            primary: ["Triceps (Long Head)"],
+            secondary: ["Triceps (Lateral & Medial Heads)"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+        "Rope Pushdowns": {
+            primary: ["Triceps (Lateral & Medial Heads)"],
+            secondary: ["Triceps (Long Head)"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+        "V-Bar Pushdowns": {
+            primary: ["Triceps (All Heads)"],
+            secondary: ["Forearms"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+        "Overhead Extensions": {
+            primary: ["Triceps (Long Head)"],
+            secondary: ["Triceps (Lateral & Medial Heads)"],
+            stabilizers: ["Core", "Shoulders", "Upper Back"]
+        },
+        "Diamond Push-ups": {
+            primary: ["Triceps"],
+            secondary: ["Chest", "Front Deltoids"],
+            stabilizers: ["Core", "Serratus Anterior"]
+        },
+        "Single Arm Extensions": {
+            primary: ["Triceps (All Heads)"],
+            secondary: ["Forearms"],
+            stabilizers: ["Core", "Shoulders", "Obliques"]
+        },
+        "JM Press": {
+            primary: ["Triceps"],
+            secondary: ["Front Deltoids", "Upper Chest"],
+            stabilizers: ["Core", "Rotator Cuff"]
+        },
+        "French Press": {
+            primary: ["Triceps (Long Head)"],
+            secondary: ["Triceps (Lateral & Medial Heads)"],
+            stabilizers: ["Core", "Shoulders"]
+        },
+
+        // SHOULDERS EXERCISES
+        "Military Press": {
+            primary: ["Front Deltoids", "Middle Deltoids"],
+            secondary: ["Triceps", "Upper Chest", "Traps"],
+            stabilizers: ["Core", "Rotator Cuff", "Lower Back"]
+        },
+        "Arnold Press": {
+            primary: ["Front Deltoids", "Middle Deltoids"],
+            secondary: ["Rear Deltoids", "Triceps"],
+            stabilizers: ["Core", "Rotator Cuff", "Traps"]
+        },
+        "Lateral Raises": {
+            primary: ["Middle Deltoids"],
+            secondary: ["Front Deltoids", "Traps"],
+            stabilizers: ["Rotator Cuff", "Core"]
+        },
+        "Face Pulls": {
+            primary: ["Rear Deltoids", "Upper Back"],
+            secondary: ["Middle Deltoids", "Rotator Cuff"],
+            stabilizers: ["Core", "Lower Traps"]
+        },
+        "Reverse Pec Deck": {
+            primary: ["Rear Deltoids"],
+            secondary: ["Middle Deltoids", "Rhomboids"],
+            stabilizers: ["Rotator Cuff", "Traps"]
+        },
+        "Front Raises": {
+            primary: ["Front Deltoids"],
+            secondary: ["Upper Chest", "Serratus Anterior"],
+            stabilizers: ["Core", "Lower Back"]
+        },
+        "Bent Over Lateral Raises": {
+            primary: ["Rear Deltoids"],
+            secondary: ["Middle Deltoids", "Rhomboids"],
+            stabilizers: ["Lower Back", "Core"]
+        },
+        "Cable Lateral Raises": {
+            primary: ["Middle Deltoids"],
+            secondary: ["Front Deltoids", "Traps"],
+            stabilizers: ["Rotator Cuff", "Core"]
+        },
+        "Upright Rows": {
+            primary: ["Middle Deltoids", "Traps"],
+            secondary: ["Front Deltoids", "Biceps"],
+            stabilizers: ["Core", "Forearms"]
+        },
+        "Behind Neck Press": {
+            primary: ["Middle Deltoids", "Front Deltoids"],
+            secondary: ["Triceps", "Traps"],
+            stabilizers: ["Core", "Rotator Cuff"]
+        },
+
+        // LEGS EXERCISES
+        "Back Squats": {
+            primary: ["Quadriceps", "Glutes"],
+            secondary: ["Hamstrings", "Lower Back", "Calves"],
+            stabilizers: ["Core", "Adductors", "Hip Flexors"]
+        },
+        "Front Squats": {
+            primary: ["Quadriceps", "Upper Back"],
+            secondary: ["Glutes", "Core", "Hamstrings"],
+            stabilizers: ["Lower Back", "Adductors"]
+        },
+        "Romanian Deadlifts": {
+            primary: ["Hamstrings", "Glutes"],
+            secondary: ["Lower Back", "Upper Back"],
+            stabilizers: ["Core", "Forearms", "Traps"]
+        },
+        "Bulgarian Split Squats": {
+            primary: ["Quadriceps", "Glutes"],
+            secondary: ["Hamstrings", "Calves"],
+            stabilizers: ["Core", "Hip Flexors", "Adductors"]
+        },
+        "Walking Lunges": {
+            primary: ["Quadriceps", "Glutes"],
+            secondary: ["Hamstrings", "Calves"],
+            stabilizers: ["Core", "Hip Flexors", "Adductors"]
+        },
+        "Hack Squats": {
+            primary: ["Quadriceps"],
+            secondary: ["Glutes", "Hamstrings"],
+            stabilizers: ["Core", "Lower Back", "Calves"]
+        },
+        "Leg Press": {
+            primary: ["Quadriceps", "Glutes"],
+            secondary: ["Hamstrings", "Calves"],
+            stabilizers: ["Core", "Lower Back"]
+        },
+        "Standing Calf Raises": {
+            primary: ["Gastrocnemius (Upper Calves)"],
+            secondary: ["Soleus (Lower Calves)"],
+            stabilizers: ["Tibialis Anterior", "Core"]
+        },
+        "Seated Calf Raises": {
+            primary: ["Soleus (Lower Calves)"],
+            secondary: ["Gastrocnemius (Upper Calves)"],
+            stabilizers: ["Tibialis Anterior"]
+        },
+        "Leg Extensions": {
+            primary: ["Quadriceps"],
+            secondary: ["None"],
+            stabilizers: ["Knee Stabilizers"]
+        },
+        "Lying Leg Curls": {
+            primary: ["Hamstrings"],
+            secondary: ["Calves"],
+            stabilizers: ["Lower Back", "Core"]
+        },
+        "Good Mornings": {
+            primary: ["Lower Back", "Hamstrings"],
+            secondary: ["Glutes", "Upper Back"],
+            stabilizers: ["Core", "Hip Flexors"]
+        },
+        "Hip Thrusts": {
+            primary: ["Glutes"],
+            secondary: ["Hamstrings", "Quadriceps"],
+            stabilizers: ["Core", "Lower Back", "Hip Flexors"]
+        },
+        "Sissy Squats": {
+            primary: ["Quadriceps"],
+            secondary: ["Hip Flexors"],
+            stabilizers: ["Core", "Knee Stabilizers"]
+        },
+        "Box Squats": {
+            primary: ["Glutes", "Hamstrings"],
+            secondary: ["Quadriceps", "Lower Back"],
+            stabilizers: ["Core", "Hip Flexors", "Adductors"]
+        }
+    };
+
+    // Initialize Select2 with search
     $(document).ready(function() {
         $('.select2').select2({
             width: 'style',
             placeholder: "Search or select exercise"
         });
+
+        // Update tooltip when exercise is selected (using Select2 event)
+        $('#exerciseSelect').on('select2:select', function(e) {
+            updateTooltip(e.target.value);
+        });
+
+        // Also handle regular change event for safety
+        $('#exerciseSelect').on('change', function() {
+            updateTooltip(this.value);
+        });
     });
 
-    // Complete exercise data
-    const exerciseData = {
-        // Chest Exercises
-        "Flat Bench Press": { primary: "Middle Chest", secondary: "Triceps, Front Deltoids" },
-        "Incline Bench Press": { primary: "Upper Chest", secondary: "Front Deltoids, Triceps" },
-        "Decline Bench Press": { primary: "Lower Chest", secondary: "Triceps" },
-        "Dumbbell Press": { primary: "Chest", secondary: "Triceps, Front Deltoids" },
-        "Push-ups": { primary: "Chest", secondary: "Triceps, Front Deltoids" },
-        "Dips": { primary: "Lower Chest", secondary: "Triceps" },
-        "Cable Flyes": { primary: "Chest", secondary: "-" },
-        "Dumbbell Flyes": { primary: "Chest", secondary: "-" },
-        "Pec Deck": { primary: "Chest", secondary: "-" },
-        "Landmine Press": { primary: "Upper/Middle Chest", secondary: "Front Deltoids" },
-
-        // Back Exercises
-        "Deadlifts": { primary: "Lower Back", secondary: "Hamstrings, Traps" },
-        "Pull-ups/Chin-ups": { primary: "Lats", secondary: "Biceps" },
-        "Bent Over Rows": { primary: "Upper Back", secondary: "Biceps" },
-        "T-Bar Rows": { primary: "Upper Back", secondary: "Biceps" },
-        "Lat Pulldowns": { primary: "Lats", secondary: "Biceps" },
-        "Seated Cable Rows": { primary: "Upper Back", secondary: "Biceps" },
-        "Single-Arm Dumbbell Rows": { primary: "Upper Back", secondary: "Biceps" },
-        "Meadows Rows": { primary: "Lats", secondary: "Biceps" },
-        "Straight Arm Pulldowns": { primary: "Lats", secondary: "-" },
-        "Rack Pulls": { primary: "Upper Back", secondary: "Lower Back" },
-
-        // Biceps Exercises
-        "Standing Barbell Curls": { primary: "Biceps", secondary: "Forearms" },
-        "Alternating Dumbbell Curls": { primary: "Biceps", secondary: "Forearms" },
-        "Hammer Curls": { primary: "Brachialis, Biceps", secondary: "Forearms" },
-        "Preacher Curls": { primary: "Lower Biceps", secondary: "-" },
-        "Incline Dumbbell Curls": { primary: "Long Head Biceps", secondary: "-" },
-        "Spider Curls": { primary: "Peak Biceps", secondary: "-" },
-        "Cable Curls": { primary: "Biceps", secondary: "Forearms" },
-        "Concentration Curls": { primary: "Peak Biceps", secondary: "-" },
-        "EZ Bar Curls": { primary: "Biceps", secondary: "Forearms" },
-        "Reverse Curls": { primary: "Brachialis", secondary: "Forearms" },
-
-        // Triceps Exercises
-        "Close Grip Bench Press": { primary: "Triceps", secondary: "Chest" },
-        "Skull Crushers": { primary: "Long Head Triceps", secondary: "-" },
-        "Rope Pushdowns": { primary: "Triceps", secondary: "-" },
-        "V-Bar Pushdowns": { primary: "Triceps", secondary: "-" },
-        "Overhead Extensions": { primary: "Long Head Triceps", secondary: "-" },
-        "Diamond Push-ups": { primary: "Triceps", secondary: "Chest" },
-        "Single Arm Extensions": { primary: "Triceps", secondary: "-" },
-        "JM Press": { primary: "Triceps", secondary: "-" },
-        "French Press": { primary: "Long Head Triceps", secondary: "-" },
-
-        // Shoulder Exercises
-        "Military Press": { primary: "Front Deltoids", secondary: "Triceps" },
-        "Arnold Press": { primary: "All Deltoid Heads", secondary: "Triceps" },
-        "Lateral Raises": { primary: "Side Deltoids", secondary: "-" },
-        "Face Pulls": { primary: "Rear Deltoids", secondary: "Upper Back" },
-        "Reverse Pec Deck": { primary: "Rear Deltoids", secondary: "-" },
-        "Front Raises": { primary: "Front Deltoids", secondary: "-" },
-        "Bent Over Lateral Raises": { primary: "Rear Deltoids", secondary: "-" },
-        "Cable Lateral Raises": { primary: "Side Deltoids", secondary: "-" },
-        "Upright Rows": { primary: "Side Deltoids", secondary: "Traps" },
-        "Behind Neck Press": { primary: "All Deltoid Heads", secondary: "Triceps" },
-
-        // Leg Exercises
-        "Back Squats": { primary: "Quadriceps", secondary: "Glutes, Lower Back" },
-        "Front Squats": { primary: "Quadriceps", secondary: "Core" },
-        "Romanian Deadlifts": { primary: "Hamstrings", secondary: "Lower Back" },
-        "Bulgarian Split Squats": { primary: "Quadriceps", secondary: "Glutes" },
-        "Walking Lunges": { primary: "Quadriceps", secondary: "Glutes" },
-        "Hack Squats": { primary: "Quadriceps", secondary: "Glutes" },
-        "Leg Press": { primary: "Quadriceps", secondary: "Glutes" },
-        "Standing Calf Raises": { primary: "Gastrocnemius", secondary: "-" },
-        "Seated Calf Raises": { primary: "Soleus", secondary: "-" },
-        "Leg Extensions": { primary: "Quadriceps", secondary: "-" },
-        "Lying Leg Curls": { primary: "Hamstrings", secondary: "-" },
-        "Good Mornings": { primary: "Hamstrings", secondary: "Lower Back" },
-        "Hip Thrusts": { primary: "Glutes", secondary: "Hamstrings" },
-        "Sissy Squats": { primary: "Quadriceps", secondary: "-" },
-        "Box Squats": { primary: "Quadriceps", secondary: "Glutes" }
-    };
-
-    // Update tooltip content on exercise selection
-    $('#exerciseSelect').on('change', function() {
-        const exercise = exerciseData[this.value];
+    // Function to update tooltip content
+    function updateTooltip(exerciseName) {
+        const exercise = exerciseData[exerciseName];
         const tooltipContent = document.getElementById('exerciseInfo');
         
         if (exercise) {
             tooltipContent.innerHTML = `
-                <div class="muscle-info">
-                    <strong>Primary:</strong> ${exercise.primary}<br>
-                    <strong>Secondary:</strong> ${exercise.secondary}
+                <div class="muscle-group">
+                    <span class="muscle-group-label">Primary:</span> 
+                    ${exercise.primary.join(', ')}
+                </div>
+                <div class="muscle-group">
+                    <span class="muscle-group-label">Secondary:</span> 
+                    ${exercise.secondary.join(', ')}
+                </div>
+                <div class="muscle-group">
+                    <span class="muscle-group-label">Stabilizers:</span> 
+                    ${exercise.stabilizers.join(', ')}
                 </div>
             `;
         } else {
-            tooltipContent.innerHTML = 'Select an exercise to see muscle information';
+            tooltipContent.textContent = 'Select an exercise to see target muscles';
         }
-    });
+    }
 
     document.getElementById('numSets').addEventListener('change', function() {
         const numSets = parseInt(this.value);
