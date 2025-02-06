@@ -1,0 +1,851 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fitness Tracker</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add custom CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <!-- Add this in the head section for searchable dropdown -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            padding: 15px;
+            max-width: 1400px;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 15px;
+        }
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-primary {
+            border-radius: 8px;
+            padding: 10px 20px;
+            width: 100%;
+        }
+        .history-entry {
+            border-left: 4px solid #007bff;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+            transition: transform 0.2s;
+        }
+        .history-entry:hover {
+            transform: translateX(5px);
+            background-color: #e9ecef;
+        }
+        .stats {
+            font-size: 1.1em;
+            color: #495057;
+        }
+        .date-time {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .exercise-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip-content {
+            visibility: hidden;
+            position: absolute;
+            bottom: 125%;
+            right: 0;
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            min-width: 180px;
+        }
+
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 10px;
+            border: 5px solid transparent;
+            border-top-color: #333;
+        }
+
+        .exercise-tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .muscle-info {
+            line-height: 1.4;
+        }
+
+        .exercise-select-group {
+            margin-bottom: 15px;
+        }
+
+        /* Add these styles for better Select2 integration */
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-selection {
+            height: 38px !important;
+            padding: 5px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 8px !important;
+        }
+
+        .fc-event {
+            cursor: pointer;
+        }
+        .fc-event:hover {
+            opacity: 0.8;
+        }
+        #calendar {
+            margin: 20px 0;
+            background-color: white;
+        }
+        .history-entry {
+            transition: background-color 0.5s ease;
+        }
+        .calendar-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .calendar-header {
+            background: linear-gradient(135deg, #0061f2 0%, #00a3ff 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #0061f2;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .quote-card {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            max-width: 250px;
+            padding: 12px;
+            border-left: 3px solid #0061f2;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .quote-card.collapsed {
+            max-width: 35px;
+            max-height: 35px;
+            padding: 8px;
+        }
+
+        .quote-toggle {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            padding: 2px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .quote-text {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .quote-author {
+            font-size: 0.75rem;
+            color: #a0a0a0;
+            margin-top: 6px;
+        }
+
+        .quote-indicator {
+            font-size: 1rem;
+        }
+
+        /* Calendar Styling */
+        .fc {
+            background: white;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .fc-button {
+            background: #0061f2 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .fc-event {
+            border-radius: 5px !important;
+            padding: 3px 5px !important;
+        }
+
+        .fc-day-today {
+            background: #f8f9fa !important;
+        }
+
+        .calendar-card {
+            position: sticky;
+            top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .row {
+                margin: 0;
+            }
+
+            .col-md-5, .col-md-7 {
+                padding: 0;
+            }
+
+            .card {
+                margin-bottom: 15px;
+                border-radius: 10px;
+            }
+
+            .quote-card {
+                max-width: 200px;
+                bottom: 8px;
+                right: 8px;
+            }
+
+            .calendar-card {
+                margin-top: 15px;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .quote-text {
+                font-size: 0.8rem;
+            }
+
+            .quote-author {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .quote-card {
+                max-width: 200px;
+            }
+
+            .quote-text {
+                font-size: 0.85rem;
+            }
+
+            .exercise-tooltip .tooltip-content {
+                min-width: 120px;
+                max-width: 200px;
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">💪 Fitness Tracker</h1>
+        
+        <div class="row">
+            <!-- Exercise Form Column (Left Side) -->
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="mb-0">Add Exercise</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" id="exerciseForm">
+                            <div class="mb-3">
+                                <label class="form-label">Date:</label>
+                                <input type="datetime-local" class="form-control" name="exercise_date" id="exerciseDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Exercise:</label>
+                                <div class="input-group">
+                                    <select class="form-control select2" name="type" id="exerciseSelect" required>
+                                        <option value="">Search or select exercise</option>
+                                        <optgroup label="Chest">
+                                            <option value="Flat Bench Press">Flat Bench Press</option>
+                                            <option value="Incline Bench Press">Incline Bench Press</option>
+                                            <option value="Decline Bench Press">Decline Bench Press</option>
+                                            <option value="Dumbbell Press">Dumbbell Press</option>
+                                            <option value="Push-ups">Push-ups</option>
+                                            <option value="Dips">Dips</option>
+                                            <option value="Cable Flyes">Cable Flyes</option>
+                                            <option value="Dumbbell Flyes">Dumbbell Flyes</option>
+                                            <option value="Pec Deck">Pec Deck</option>
+                                            <option value="Landmine Press">Landmine Press</option>
+                                        </optgroup>
+                                        <optgroup label="Back">
+                                            <option value="Deadlifts">Deadlifts</option>
+                                            <option value="Pull-ups/Chin-ups">Pull-ups/Chin-ups</option>
+                                            <option value="Bent Over Rows">Bent Over Rows</option>
+                                            <option value="T-Bar Rows">T-Bar Rows</option>
+                                            <option value="Lat Pulldowns">Lat Pulldowns</option>
+                                            <option value="Seated Cable Rows">Seated Cable Rows</option>
+                                            <option value="Single-Arm Dumbbell Rows">Single-Arm Dumbbell Rows</option>
+                                            <option value="Meadows Rows">Meadows Rows</option>
+                                            <option value="Straight Arm Pulldowns">Straight Arm Pulldowns</option>
+                                            <option value="Rack Pulls">Rack Pulls</option>
+                                        </optgroup>
+                                        <optgroup label="Biceps">
+                                            <option value="Standing Barbell Curls">Standing Barbell Curls</option>
+                                            <option value="Alternating Dumbbell Curls">Alternating Dumbbell Curls</option>
+                                            <option value="Hammer Curls">Hammer Curls</option>
+                                            <option value="Preacher Curls">Preacher Curls</option>
+                                            <option value="Incline Dumbbell Curls">Incline Dumbbell Curls</option>
+                                            <option value="Spider Curls">Spider Curls</option>
+                                            <option value="Cable Curls">Cable Curls</option>
+                                            <option value="Concentration Curls">Concentration Curls</option>
+                                            <option value="EZ Bar Curls">EZ Bar Curls</option>
+                                            <option value="Reverse Curls">Reverse Curls</option>
+                                        </optgroup>
+                                        <optgroup label="Triceps">
+                                            <option value="Close Grip Bench Press">Close Grip Bench Press</option>
+                                            <option value="Skull Crushers">Skull Crushers</option>
+                                            <option value="Rope Pushdowns">Rope Pushdowns</option>
+                                            <option value="V-Bar Pushdowns">V-Bar Pushdowns</option>
+                                            <option value="Overhead Extensions">Overhead Extensions</option>
+                                            <option value="Diamond Push-ups">Diamond Push-ups</option>
+                                            <option value="Single Arm Extensions">Single Arm Extensions</option>
+                                            <option value="JM Press">JM Press</option>
+                                            <option value="Dips">Dips</option>
+                                            <option value="French Press">French Press</option>
+                                        </optgroup>
+                                        <optgroup label="Shoulders">
+                                            <option value="Military Press">Military Press</option>
+                                            <option value="Arnold Press">Arnold Press</option>
+                                            <option value="Lateral Raises">Lateral Raises</option>
+                                            <option value="Face Pulls">Face Pulls</option>
+                                            <option value="Reverse Pec Deck">Reverse Pec Deck</option>
+                                            <option value="Front Raises">Front Raises</option>
+                                            <option value="Bent Over Lateral Raises">Bent Over Lateral Raises</option>
+                                            <option value="Cable Lateral Raises">Cable Lateral Raises</option>
+                                            <option value="Upright Rows">Upright Rows</option>
+                                            <option value="Behind Neck Press">Behind Neck Press</option>
+                                        </optgroup>
+                                        <optgroup label="Legs">
+                                            <option value="Back Squats">Back Squats</option>
+                                            <option value="Front Squats">Front Squats</option>
+                                            <option value="Romanian Deadlifts">Romanian Deadlifts</option>
+                                            <option value="Bulgarian Split Squats">Bulgarian Split Squats</option>
+                                            <option value="Walking Lunges">Walking Lunges</option>
+                                            <option value="Hack Squats">Hack Squats</option>
+                                            <option value="Leg Press">Leg Press</option>
+                                            <option value="Standing Calf Raises">Standing Calf Raises</option>
+                                            <option value="Seated Calf Raises">Seated Calf Raises</option>
+                                            <option value="Leg Extensions">Leg Extensions</option>
+                                            <option value="Lying Leg Curls">Lying Leg Curls</option>
+                                            <option value="Good Mornings">Good Mornings</option>
+                                            <option value="Hip Thrusts">Hip Thrusts</option>
+                                            <option value="Sissy Squats">Sissy Squats</option>
+                                            <option value="Box Squats">Box Squats</option>
+                                        </optgroup>
+                                    </select>
+                                    <span class="input-group-text exercise-tooltip">
+                                        <i class="bi bi-info-circle"></i>
+                                        <div class="tooltip-content" id="exerciseInfo">
+                                            Select an exercise to see muscle information
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Number of Sets:</label>
+                                <input type="number" class="form-control" name="num_sets" id="numSets" 
+                                       required min="1" max="10" value="1">
+                            </div>
+                            
+                            <div id="setInputs" class="mb-3">
+                                <!-- Set inputs will be dynamically added here -->
+                            </div>
+                            
+                            <button type="submit" name="exercise" class="btn btn-primary">
+                                Add Exercise
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="mb-0">Exercise History</h3>
+                    </div>
+                    <div class="card-body">
+                        {% for exercise in exercises %}
+                        <div class="history-entry" id="exercise-{{ exercise.id }}">
+                            <div class="stats">
+                                <strong>{{ exercise.type }}</strong>
+                                <div class="mt-2">
+                                    {% for set in exercise.sets %}
+                                    <div class="set-details">
+                                        <span class="badge bg-primary">Set {{ set.set_number }}</span>
+                                        <span class="badge bg-success">{{ set.weight }}kg</span>
+                                        <span class="badge bg-info">{{ set.reps }} reps</span>
+                                        <span class="badge bg-warning">Total: {{ set.total }}kg</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="date-time mt-2">
+                                📅 {{ exercise.date.strftime('%Y-%m-%d %H:%M') }} MYT
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Column (Right Side) -->
+            <div class="col-md-7">
+                <div class="calendar-card">
+                    <div class="calendar-header">
+                        <h3 class="mb-0">Fitness Journey Calendar</h3>
+                    </div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-number">{{ monthly_sessions }}</div>
+                            <div class="stat-label">Workouts This Month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">{{ total_exercises }}</div>
+                            <div class="stat-label">Total Exercises</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">{{ streak_days }}</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motivational Quote Card -->
+    <div class="quote-card" id="quoteCard">
+        <button class="quote-toggle" onclick="toggleQuote()">
+            <i class="bi bi-chevron-down" id="quoteToggleIcon"></i>
+        </button>
+        <div class="quote-indicator">💪</div>
+        <div class="quote-content">
+            <div class="quote-text" id="quote-text"></div>
+            <div class="quote-author" id="quote-author"></div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS and its dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Add these scripts before the closing body tag, after Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script>
+    // Initialize Select2
+    $(document).ready(function() {
+        $('.select2').select2({
+            width: 'style',
+            placeholder: "Search or select exercise"
+        });
+    });
+
+    // Complete exercise data
+    const exerciseData = {
+        // Chest Exercises
+        "Flat Bench Press": { primary: "Middle Chest", secondary: "Triceps, Front Deltoids" },
+        "Incline Bench Press": { primary: "Upper Chest", secondary: "Front Deltoids, Triceps" },
+        "Decline Bench Press": { primary: "Lower Chest", secondary: "Triceps" },
+        "Dumbbell Press": { primary: "Chest", secondary: "Triceps, Front Deltoids" },
+        "Push-ups": { primary: "Chest", secondary: "Triceps, Front Deltoids" },
+        "Dips": { primary: "Lower Chest", secondary: "Triceps" },
+        "Cable Flyes": { primary: "Chest", secondary: "-" },
+        "Dumbbell Flyes": { primary: "Chest", secondary: "-" },
+        "Pec Deck": { primary: "Chest", secondary: "-" },
+        "Landmine Press": { primary: "Upper/Middle Chest", secondary: "Front Deltoids" },
+
+        // Back Exercises
+        "Deadlifts": { primary: "Lower Back", secondary: "Hamstrings, Traps" },
+        "Pull-ups/Chin-ups": { primary: "Lats", secondary: "Biceps" },
+        "Bent Over Rows": { primary: "Upper Back", secondary: "Biceps" },
+        "T-Bar Rows": { primary: "Upper Back", secondary: "Biceps" },
+        "Lat Pulldowns": { primary: "Lats", secondary: "Biceps" },
+        "Seated Cable Rows": { primary: "Upper Back", secondary: "Biceps" },
+        "Single-Arm Dumbbell Rows": { primary: "Upper Back", secondary: "Biceps" },
+        "Meadows Rows": { primary: "Lats", secondary: "Biceps" },
+        "Straight Arm Pulldowns": { primary: "Lats", secondary: "-" },
+        "Rack Pulls": { primary: "Upper Back", secondary: "Lower Back" },
+
+        // Biceps Exercises
+        "Standing Barbell Curls": { primary: "Biceps", secondary: "Forearms" },
+        "Alternating Dumbbell Curls": { primary: "Biceps", secondary: "Forearms" },
+        "Hammer Curls": { primary: "Brachialis, Biceps", secondary: "Forearms" },
+        "Preacher Curls": { primary: "Lower Biceps", secondary: "-" },
+        "Incline Dumbbell Curls": { primary: "Long Head Biceps", secondary: "-" },
+        "Spider Curls": { primary: "Peak Biceps", secondary: "-" },
+        "Cable Curls": { primary: "Biceps", secondary: "Forearms" },
+        "Concentration Curls": { primary: "Peak Biceps", secondary: "-" },
+        "EZ Bar Curls": { primary: "Biceps", secondary: "Forearms" },
+        "Reverse Curls": { primary: "Brachialis", secondary: "Forearms" },
+
+        // Triceps Exercises
+        "Close Grip Bench Press": { primary: "Triceps", secondary: "Chest" },
+        "Skull Crushers": { primary: "Long Head Triceps", secondary: "-" },
+        "Rope Pushdowns": { primary: "Triceps", secondary: "-" },
+        "V-Bar Pushdowns": { primary: "Triceps", secondary: "-" },
+        "Overhead Extensions": { primary: "Long Head Triceps", secondary: "-" },
+        "Diamond Push-ups": { primary: "Triceps", secondary: "Chest" },
+        "Single Arm Extensions": { primary: "Triceps", secondary: "-" },
+        "JM Press": { primary: "Triceps", secondary: "-" },
+        "French Press": { primary: "Long Head Triceps", secondary: "-" },
+
+        // Shoulder Exercises
+        "Military Press": { primary: "Front Deltoids", secondary: "Triceps" },
+        "Arnold Press": { primary: "All Deltoid Heads", secondary: "Triceps" },
+        "Lateral Raises": { primary: "Side Deltoids", secondary: "-" },
+        "Face Pulls": { primary: "Rear Deltoids", secondary: "Upper Back" },
+        "Reverse Pec Deck": { primary: "Rear Deltoids", secondary: "-" },
+        "Front Raises": { primary: "Front Deltoids", secondary: "-" },
+        "Bent Over Lateral Raises": { primary: "Rear Deltoids", secondary: "-" },
+        "Cable Lateral Raises": { primary: "Side Deltoids", secondary: "-" },
+        "Upright Rows": { primary: "Side Deltoids", secondary: "Traps" },
+        "Behind Neck Press": { primary: "All Deltoid Heads", secondary: "Triceps" },
+
+        // Leg Exercises
+        "Back Squats": { primary: "Quadriceps", secondary: "Glutes, Lower Back" },
+        "Front Squats": { primary: "Quadriceps", secondary: "Core" },
+        "Romanian Deadlifts": { primary: "Hamstrings", secondary: "Lower Back" },
+        "Bulgarian Split Squats": { primary: "Quadriceps", secondary: "Glutes" },
+        "Walking Lunges": { primary: "Quadriceps", secondary: "Glutes" },
+        "Hack Squats": { primary: "Quadriceps", secondary: "Glutes" },
+        "Leg Press": { primary: "Quadriceps", secondary: "Glutes" },
+        "Standing Calf Raises": { primary: "Gastrocnemius", secondary: "-" },
+        "Seated Calf Raises": { primary: "Soleus", secondary: "-" },
+        "Leg Extensions": { primary: "Quadriceps", secondary: "-" },
+        "Lying Leg Curls": { primary: "Hamstrings", secondary: "-" },
+        "Good Mornings": { primary: "Hamstrings", secondary: "Lower Back" },
+        "Hip Thrusts": { primary: "Glutes", secondary: "Hamstrings" },
+        "Sissy Squats": { primary: "Quadriceps", secondary: "-" },
+        "Box Squats": { primary: "Quadriceps", secondary: "Glutes" }
+    };
+
+    // Update tooltip content on exercise selection
+    $('#exerciseSelect').on('change', function() {
+        const exercise = exerciseData[this.value];
+        const tooltipContent = document.getElementById('exerciseInfo');
+        
+        if (exercise) {
+            tooltipContent.innerHTML = `
+                <div class="muscle-info">
+                    <strong>Primary:</strong> ${exercise.primary}<br>
+                    <strong>Secondary:</strong> ${exercise.secondary}
+                </div>
+            `;
+        } else {
+            tooltipContent.innerHTML = 'Select an exercise to see muscle information';
+        }
+    });
+
+    document.getElementById('numSets').addEventListener('change', function() {
+        const numSets = parseInt(this.value);
+        const setInputsDiv = document.getElementById('setInputs');
+        setInputsDiv.innerHTML = '';
+        
+        for (let i = 1; i <= numSets; i++) {
+            const setDiv = document.createElement('div');
+            setDiv.className = 'card mb-3';
+            setDiv.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">Set ${i}</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Weight (kg):</label>
+                            <input type="number" class="form-control" name="weight_${i}" 
+                                   required min="0" step="0.5">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Reps:</label>
+                            <input type="number" class="form-control" name="reps_${i}" 
+                                   required min="1">
+                        </div>
+                    </div>
+                </div>
+            `;
+            setInputsDiv.appendChild(setDiv);
+        }
+    });
+
+    // Trigger the change event to create the first set input
+    document.getElementById('numSets').dispatchEvent(new Event('change'));
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: [
+                {% for exercise in exercises %}
+                {
+                    title: '{{ exercise.type }}',
+                    start: '{{ exercise.date.strftime("%Y-%m-%dT%H:%M:%S") }}',
+                    url: '#exercise-{{ exercise.id }}',
+                    backgroundColor: '#007bff',
+                },
+                {% endfor %}
+            ],
+            eventClick: function(info) {
+                info.jsEvent.preventDefault();
+                const elementId = info.event.url.substring(1);
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                    element.style.backgroundColor = '#fff3cd';
+                    setTimeout(() => {
+                        element.style.backgroundColor = '';
+                    }, 2000);
+                }
+            },
+            timeZone: 'Asia/Singapore'
+        });
+        calendar.render();
+    });
+
+    // Function to format date to YYYY-MM-DDThh:mm
+    function formatDateForInput(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    // Set default date to now
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const dateInput = document.getElementById('exerciseDate');
+        dateInput.value = formatDateForInput(now);
+    });
+
+    const quotes = [
+        // Mindset & Mental Toughness (David Goggins)
+        {
+            text: "Don't stop when you're tired. Stop when you're done.",
+            author: "David Goggins"
+        },
+        {
+            text: "The pain you are willing to endure is measured by how bad you want it.",
+            author: "David Goggins"
+        },
+        {
+            text: "The mind is the most powerful weapon on the planet.",
+            author: "David Goggins"
+        },
+        {
+            text: "You have to build calluses on your brain just like you build calluses on your hands.",
+            author: "David Goggins"
+        },
+        {
+            text: "Nobody cares what you did yesterday. What have you done today to better yourself?",
+            author: "David Goggins"
+        },
+
+        // Motivation & Success
+        {
+            text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+            author: "Winston Churchill"
+        },
+        {
+            text: "Whether you think you can, or you think you can't – you're right.",
+            author: "Henry Ford"
+        },
+        {
+            text: "Champions aren't made in gyms. Champions are made from something they have deep inside them.",
+            author: "Muhammad Ali"
+        },
+
+        // Philosophy & Life Wisdom
+        {
+            text: "He who has a why to live can bear almost any how.",
+            author: "Friedrich Nietzsche"
+        },
+        {
+            text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+            author: "Aristotle"
+        },
+        {
+            text: "What doesn't kill you makes you stronger.",
+            author: "Friedrich Nietzsche"
+        },
+
+        // Fitness & Training
+        {
+            text: "The body achieves what the mind believes.",
+            author: "Unknown"
+        },
+        {
+            text: "Pain is weakness leaving the body.",
+            author: "US Marine Corps"
+        },
+        {
+            text: "If it doesn't challenge you, it doesn't change you.",
+            author: "Fred DeVito"
+        },
+
+        // Perseverance & Discipline
+        {
+            text: "Discipline is choosing between what you want now and what you want most.",
+            author: "Abraham Lincoln"
+        },
+        {
+            text: "Fall seven times, stand up eight.",
+            author: "Japanese Proverb"
+        },
+        {
+            text: "Success isn't always about greatness. It's about consistency.",
+            author: "Dwayne Johnson"
+        },
+
+        // Growth & Self-Improvement
+        {
+            text: "The only person you should try to be better than is the person you were yesterday.",
+            author: "Unknown"
+        },
+        {
+            text: "Small daily improvements are the key to staggering long-term results.",
+            author: "Unknown"
+        },
+
+        // Mental Strength
+        {
+            text: "Your mind will quit 100 times before your body does.",
+            author: "Unknown"
+        },
+        {
+            text: "The pain of discipline is nothing compared to the pain of regret.",
+            author: "Unknown"
+        },
+        {
+            text: "Comfort is the enemy of progress.",
+            author: "P.T. Barnum"
+        }
+    ];
+
+    // Display random quote function remains the same
+    function displayRandomQuote() {
+        const quote = quotes[Math.floor(Math.random() * quotes.length)];
+        document.getElementById('quote-text').textContent = `"${quote.text}"`;
+        document.getElementById('quote-author').textContent = `- ${quote.author}`;
+    }
+
+    // Update quote every 6 hours instead of 24
+    displayRandomQuote();
+    setInterval(displayRandomQuote, 6 * 60 * 60 * 1000);
+
+    function toggleQuote() {
+        const quoteCard = document.getElementById('quoteCard');
+        const toggleIcon = document.getElementById('quoteToggleIcon');
+        
+        quoteCard.classList.toggle('collapsed');
+        
+        if (quoteCard.classList.contains('collapsed')) {
+            toggleIcon.classList.remove('bi-chevron-down');
+            toggleIcon.classList.add('bi-chevron-up');
+        } else {
+            toggleIcon.classList.remove('bi-chevron-up');
+            toggleIcon.classList.add('bi-chevron-down');
+        }
+    }
+    </script>
+</body>
+</html>
