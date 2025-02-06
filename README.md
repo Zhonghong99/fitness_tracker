@@ -161,10 +161,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Bootstrap themes and components
 - Flask documentation and community
 
-## Support
-
-For support, please open an issue in the GitHub repository or contact [your-email@example.com]
-
 ## Author
 
 [Zhong Hong Lee]
