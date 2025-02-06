@@ -67,33 +67,35 @@
             position: relative;
             display: inline-block;
             cursor: help;
+            padding: 5px;
         }
 
         .tooltip-content {
             visibility: hidden;
             position: absolute;
-            bottom: 125%;
-            right: 0;
+            z-index: 1000;
             background: #333;
             color: white;
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 0.85rem;
-            white-space: nowrap;
+            white-space: normal;
             opacity: 0;
             transition: opacity 0.3s;
-            z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            min-width: 180px;
+            width: 200px;
+            right: 0;
+            top: 100%;
+            margin-top: 5px;
         }
 
         .tooltip-content::after {
             content: '';
             position: absolute;
-            top: 100%;
+            top: -5px;
             right: 10px;
             border: 5px solid transparent;
-            border-top-color: #333;
+            border-bottom-color: #333;
         }
 
         .exercise-tooltip:hover .tooltip-content {
@@ -106,6 +108,7 @@
         }
 
         .exercise-select-group {
+            position: relative;
             margin-bottom: 15px;
         }
 
@@ -256,13 +259,15 @@
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
+                max-width: 100%;
             }
 
             .row {
-                margin: 0;
+                flex-direction: column;
             }
 
             .col-md-5, .col-md-7 {
+                width: 100%;
                 padding: 0;
             }
 
@@ -271,58 +276,62 @@
                 border-radius: 10px;
             }
 
+            .tooltip-content {
+                width: 180px;
+                right: -90px;
+                transform: translateX(50%);
+            }
+
+            .tooltip-content::after {
+                right: 50%;
+                transform: translateX(50%);
+            }
+
+            .calendar-card {
+                position: static;
+                margin-top: 15px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .form-control, .select2-container {
+                font-size: 16px;
+            }
+
             .quote-card {
                 max-width: 200px;
                 bottom: 8px;
                 right: 8px;
             }
+        }
 
-            .calendar-card {
-                margin-top: 15px;
+        @media (max-width: 480px) {
+            .container {
+                padding: 5px;
+            }
+
+            .card-body {
+                padding: 10px;
+            }
+
+            .tooltip-content {
+                width: 160px;
+                font-size: 0.8rem;
             }
 
             .stats-container {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
                 gap: 10px;
-                padding: 10px;
             }
 
             .stat-card {
-                padding: 15px;
-            }
-
-            .stat-number {
-                font-size: 2rem;
-            }
-
-            .quote-text {
-                font-size: 0.8rem;
-            }
-
-            .quote-author {
-                font-size: 0.7rem;
-            }
-        }
-
-        /* Small mobile devices */
-        @media (max-width: 480px) {
-            .quote-card {
-                max-width: 200px;
-            }
-
-            .quote-text {
-                font-size: 0.85rem;
-            }
-
-            .exercise-tooltip .tooltip-content {
-                min-width: 120px;
-                max-width: 200px;
-                font-size: 0.8rem;
                 padding: 10px;
             }
 
-            .stats-container {
-                grid-template-columns: 1fr;
+            .stat-number {
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -346,7 +355,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Exercise:</label>
-                                <div class="input-group">
+                                <div class="d-flex flex-column">
                                     <select class="form-control select2" name="type" id="exerciseSelect" required>
                                         <option value="">Search or select exercise</option>
                                         <optgroup label="Chest">
@@ -427,12 +436,12 @@
                                             <option value="Box Squats">Box Squats</option>
                                         </optgroup>
                                     </select>
-                                    <span class="input-group-text exercise-tooltip">
+                                    <div class="exercise-tooltip align-self-end mt-1">
                                         <i class="bi bi-info-circle"></i>
                                         <div class="tooltip-content" id="exerciseInfo">
                                             Select an exercise to see muscle information
                                         </div>
-                                    </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mb-3">
