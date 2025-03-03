@@ -27,7 +27,7 @@ A simple, clean, and effective web application to track your workouts and mainta
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/fitness-tracker.git
+git clone https://github.com/Zhonghong99/fitness_tracker.git
 cd fitness-tracker
 ```
 
